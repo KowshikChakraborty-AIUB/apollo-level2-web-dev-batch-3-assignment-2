@@ -36,7 +36,7 @@ const getAllProduct = async (req: Request, res: Response) => {
             data: result,
         })
     } catch (err) {
-        res.status(404).json({
+        res.status(500).json({
             success: false,
             message: "Product not found",
             error: err,
@@ -58,7 +58,64 @@ const getSpecificProduct = async (req: Request, res: Response) => {
             data: result,
         })
     } catch (err) {
-        res.status(404).json({
+        res.status(500).json({
+            success: false,
+            message: "Product not found",
+            error: err,
+        })
+    }
+}
+
+//update a single product by id request-response handler
+const getUpdatedProduct = async (req: Request, res: Response) => {
+    try {
+        const { productId } = req.params;
+        const filter = productId;
+        
+
+        // const update = {
+        //     inventory: {
+        //         quantity: 500,
+        //         inStock: true
+        //     }
+        // }
+
+        const update = req.body;
+        //console.log(update);
+
+        const result = await ProductServices.getUpdatedProduct(filter, update)
+        
+        const updatedData = await ProductServices.getAllProduct()
+
+        res.status(200).json({
+            success: true,
+            message: "Product updated successfully!",
+            data: updatedData,
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Product not found",
+            error: err,
+        })
+    }
+}
+
+
+//delete a product by id request-response handler
+const deletedProduct = async (req: Request, res: Response) => {
+    try {
+        const { productId } = req.params;
+
+        const result = await ProductServices.deletedProduct(productId)
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully!",
+            data: null,
+        })
+    } catch (err) {
+        res.status(500).json({
             success: false,
             message: "Product not found",
             error: err,
@@ -71,4 +128,6 @@ export const ProductControllers = {
     createProduct,
     getAllProduct,
     getSpecificProduct,
+    getUpdatedProduct,
+    deletedProduct,
 }

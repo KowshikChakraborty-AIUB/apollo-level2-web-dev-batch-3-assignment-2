@@ -15,7 +15,20 @@ const getAllProduct = async () => {
 
 //get a single product by id
 const getSpecificProduct = async (_id: string) => {
-    const result = await Product.findOne({_id: _id});
+    const result = await Product.findOne({ _id: _id });
+    return result;
+}
+
+
+//update a single product by id
+const getUpdatedProduct = async (filter: string, update: any) => {
+    const result = await Product.updateOne({ _id: filter }, update)
+    return result;
+}
+
+//delete a product by id
+const deletedProduct = async (_id: string) => {
+    const result = await Product.deleteOne({ _id: _id });
     return result;
 }
 
@@ -23,4 +36,6 @@ export const ProductServices = {
     createProduct,
     getAllProduct,
     getSpecificProduct,
+    getUpdatedProduct,
+    deletedProduct,
 }
