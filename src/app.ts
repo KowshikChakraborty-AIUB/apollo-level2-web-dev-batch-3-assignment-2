@@ -8,7 +8,7 @@ app.use(express.json());
 app.use('/api/products', ProductRoutes)
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!')
+  res.send('Products and Orders Api Creation')
 })
 
 export default app;

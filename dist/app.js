@@ -10,6 +10,6 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use('/api/products', product_route_1.ProductRoutes);
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Products and Orders Api Creation');
 });
 exports.default = app;
