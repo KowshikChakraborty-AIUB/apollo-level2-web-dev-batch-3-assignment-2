@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { ProductServices } from "./product.service"
+import productValidationSchema from "./product.validation";
 
 //create product request-response handler
 const createProduct = async (req: Request, res: Response) => {
@@ -8,19 +9,29 @@ const createProduct = async (req: Request, res: Response) => {
         const productData = req.body;
         //console.log(productData);
 
-        const result = await ProductServices.createProduct(productData);
+        const zodParsedProductData = productValidationSchema.parse(productData);
+
+        const result = await ProductServices.createProduct(zodParsedProductData);
 
         res.status(200).json({
             success: true,
             message: 'Product created successfully!',
             data: result,
         })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Internal Server Error!",
-            error: err,
-        })
+    } catch (err: any) {
+        if (err.name === 'ZodError') {
+            res.status(403).json({
+                success: false,
+                message: "Validation Error!",
+                error: err.issues,
+            })
+        } else {
+            res.status(500).json({
+                success: false,
+                message: "Internal Server Error!",
+                error: err,
+            })
+        }
     }
 }
 
@@ -71,7 +82,7 @@ const getUpdatedProduct = async (req: Request, res: Response) => {
     try {
         const { productId } = req.params;
         const filter = productId;
-        
+
 
         // const update = {
         //     inventory: {
@@ -83,8 +94,10 @@ const getUpdatedProduct = async (req: Request, res: Response) => {
         const update = req.body;
         //console.log(update);
 
-        const result = await ProductServices.getUpdatedProduct(filter, update)
-        
+        const zodParsedUpdatedProductData = productValidationSchema.parse(update);
+
+        const result = await ProductServices.getUpdatedProduct(filter, zodParsedUpdatedProductData)
+
         const updatedData = await ProductServices.getAllProduct()
 
         res.status(200).json({
@@ -92,12 +105,20 @@ const getUpdatedProduct = async (req: Request, res: Response) => {
             message: "Product updated successfully!",
             data: updatedData,
         })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Product not found",
-            error: err,
-        })
+    } catch (err: any) {
+        if (err.name === 'ZodError') {
+            res.status(403).json({
+                success: false,
+                message: "Validation Error!",
+                error: err.issues,
+            })
+        } else {
+            res.status(500).json({
+                success: false,
+                message: "Product not found",
+                error: err,
+            })
+        }
     }
 }
 
