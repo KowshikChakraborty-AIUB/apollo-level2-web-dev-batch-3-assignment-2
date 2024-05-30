@@ -7,6 +7,13 @@ const createOrder = async (payload: TOrder) => {
     return result;
 }
 
+//get all orders
+const getAllOrder = async () => {
+    const result = await Order.find();
+    return result;
+}
+
 export const OrderServices = {
     createOrder,
+    getAllOrder,
 }

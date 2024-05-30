@@ -4,5 +4,6 @@ import { OrderControllers } from "./order.controller";
 const router = express.Router();
 
 router.post("/", OrderControllers.createOrder);
+router.get("/", OrderControllers.getAllOrder);
 
 export const orderRoutes = router
