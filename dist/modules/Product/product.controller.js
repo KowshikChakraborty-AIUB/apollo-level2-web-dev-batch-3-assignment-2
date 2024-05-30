@@ -8,15 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductControllers = void 0;
 const product_service_1 = require("./product.service");
+const product_validation_1 = __importDefault(require("./product.validation"));
 //create product request-response handler
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productData = req.body;
         //console.log(productData);
-        const result = yield product_service_1.ProductServices.createProduct(productData);
+        const zodParsedProductData = product_validation_1.default.parse(productData);
+        const result = yield product_service_1.ProductServices.createProduct(zodParsedProductData);
         res.status(200).json({
             success: true,
             message: 'Product created successfully!',
@@ -24,11 +29,20 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Internal Server Error!",
-            error: err,
-        });
+        if (err.name === 'ZodError') {
+            res.status(403).json({
+                success: false,
+                message: "Validation Error!",
+                error: err.issues,
+            });
+        }
+        else {
+            res.status(500).json({
+                success: false,
+                message: "Internal Server Error!",
+                error: err,
+            });
+        }
     }
 });
 //get all products request-response handler
@@ -81,7 +95,8 @@ const getUpdatedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functi
         // }
         const update = req.body;
         //console.log(update);
-        const result = yield product_service_1.ProductServices.getUpdatedProduct(filter, update);
+        const zodParsedUpdatedProductData = product_validation_1.default.parse(update);
+        const result = yield product_service_1.ProductServices.getUpdatedProduct(filter, zodParsedUpdatedProductData);
         const updatedData = yield product_service_1.ProductServices.getAllProduct();
         res.status(200).json({
             success: true,
@@ -90,11 +105,20 @@ const getUpdatedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
     catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Product not found",
-            error: err,
-        });
+        if (err.name === 'ZodError') {
+            res.status(403).json({
+                success: false,
+                message: "Validation Error!",
+                error: err.issues,
+            });
+        }
+        else {
+            res.status(500).json({
+                success: false,
+                message: "Product not found",
+                error: err,
+            });
+        }
     }
 });
 //delete a product by id request-response handler
