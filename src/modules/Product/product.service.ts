@@ -32,10 +32,24 @@ const deletedProduct = async (_id: string) => {
     return result;
 }
 
+//search a product based on name, category, description
+const searchAProduct = async (searchTerm: string) => {
+    const regex = new RegExp(searchTerm, 'i');
+    const result = await Product.find({
+        $or: [
+            { name: { $regex: regex } },
+            { category: { $regex: regex } },
+            { description: { $regex: regex } },
+        ],
+    })
+    return result;
+}
+
 export const ProductServices = {
     createProduct,
     getAllProduct,
     getSpecificProduct,
     getUpdatedProduct,
     deletedProduct,
+    searchAProduct,
 }

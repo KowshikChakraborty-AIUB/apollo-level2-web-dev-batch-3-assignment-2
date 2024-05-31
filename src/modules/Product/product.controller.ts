@@ -145,10 +145,52 @@ const deletedProduct = async (req: Request, res: Response) => {
 }
 
 
+//search a product request-response handler
+const searchAProduct = async (req: Request, res: Response) => {
+    const searchTerm = req.query.searchTerm;
+    
+
+    if (searchTerm) {
+        try {
+            const result = await ProductServices.searchAProduct(searchTerm as string)
+            
+
+            res.status(200).json({
+                success: true,
+                message: `Products matching search term ${searchTerm} fetched successfully!`,
+                data: result,
+            })
+        } catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Product not found",
+                error: err,
+            })
+        }
+    } else {
+        try {
+            const result = await ProductServices.getAllProduct()
+
+            res.status(200).json({
+                success: true,
+                message: "Products fetched successfully!",
+                data: result,
+            })
+        } catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Product not found",
+                error: err,
+            })
+        }
+    }
+}
+
 export const ProductControllers = {
     createProduct,
     getAllProduct,
     getSpecificProduct,
     getUpdatedProduct,
     deletedProduct,
+    searchAProduct,
 }

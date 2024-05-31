@@ -32,7 +32,7 @@ const createOrder = async (req: Request, res: Response) => {
 
 
             const result2 = await ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
-            
+
 
             return res.status(409).json({
                 "success": false,
@@ -107,7 +107,46 @@ const getAllOrder = async (req: Request, res: Response) => {
     }
 }
 
+//get an order request-response handler
+const getAnOrder = async (req: Request, res: Response) => {
+    const email = req.query.email;
+    if (email) {
+        try {
+            const result = await OrderServices.getAnOrder(email as string)
+
+            res.status(200).json({
+                success: true,
+                message: "Orders fetched successfully for user email!",
+                data: result,
+            })
+        } catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Order not found",
+                error: err,
+            })
+        }
+    } else {
+        try {
+            const result = await OrderServices.getAllOrder()
+
+            res.status(200).json({
+                success: true,
+                message: "Orders fetched successfully!",
+                data: result,
+            })
+        } catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Order not found",
+                error: err,
+            })
+        }
+    }
+}
+
 export const OrderControllers = {
     createOrder,
     getAllOrder,
+    getAnOrder,
 }

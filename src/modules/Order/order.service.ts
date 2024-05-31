@@ -13,7 +13,16 @@ const getAllOrder = async () => {
     return result;
 }
 
+//get an order based on user email
+const getAnOrder = async (email: string) => {
+    const result = await Order.find({
+        email,
+    })
+    return result;
+}
+
 export const OrderServices = {
     createOrder,
     getAllOrder,
+    getAnOrder,
 }
