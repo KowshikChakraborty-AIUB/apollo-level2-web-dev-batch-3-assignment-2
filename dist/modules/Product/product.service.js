@@ -36,10 +36,23 @@ const deletedProduct = (_id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield product_model_1.Product.deleteOne({ _id: _id });
     return result;
 });
+//search a product based on name, category, description
+const searchAProduct = (searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
+    const regex = new RegExp(searchTerm, 'i');
+    const result = yield product_model_1.Product.find({
+        $or: [
+            { name: { $regex: regex } },
+            { category: { $regex: regex } },
+            { description: { $regex: regex } },
+        ],
+    });
+    return result;
+});
 exports.ProductServices = {
     createProduct,
     getAllProduct,
     getSpecificProduct,
     getUpdatedProduct,
     deletedProduct,
+    searchAProduct,
 };

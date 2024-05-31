@@ -22,7 +22,6 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { productId, email, price, quantity } = req.body;
         const product = yield product_service_1.ProductServices.getSpecificProduct(productId);
-        console.log(product);
         if (product === null || product === undefined) {
             return res.status(404).json({
                 success: false,
@@ -34,7 +33,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             product.inventory.inStock = false;
             // console.log(product, product.inventory);
             const zodParsedUpdatedProductData = product_validation_1.default.parse(product);
-            const result2 = yield product_service_1.ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
+            yield product_service_1.ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
             return res.status(409).json({
                 "success": false,
                 "message": "Insufficient quantity available in inventory"
@@ -45,7 +44,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         product.inventory.quantity = product.inventory.quantity - quantity;
         const zodParsedUpdatedProductData = product_validation_1.default.parse(product);
         //console.log(zodParsedUpdatedProductData);
-        const result2 = yield product_service_1.ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
+        yield product_service_1.ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
         //console.log(result2);
         const orderData = { email, productId, price, quantity };
         //console.log(orderData);
@@ -92,7 +91,46 @@ const getAllOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 });
+//get an order request-response handler
+const getAnOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = req.query.email;
+    if (email) {
+        try {
+            const result = yield order_service_1.OrderServices.getAnOrder(email);
+            res.status(200).json({
+                success: true,
+                message: "Orders fetched successfully for user email!",
+                data: result,
+            });
+        }
+        catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Order not found",
+                error: err,
+            });
+        }
+    }
+    else {
+        try {
+            const result = yield order_service_1.OrderServices.getAllOrder();
+            res.status(200).json({
+                success: true,
+                message: "Orders fetched successfully!",
+                data: result,
+            });
+        }
+        catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Order not found",
+                error: err,
+            });
+        }
+    }
+});
 exports.OrderControllers = {
     createOrder,
     getAllOrder,
+    getAnOrder,
 };

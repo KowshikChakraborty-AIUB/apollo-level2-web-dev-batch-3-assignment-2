@@ -21,7 +21,15 @@ const getAllOrder = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield order_model_1.Order.find();
     return result;
 });
+//get an order based on user email
+const getAnOrder = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield order_model_1.Order.find({
+        email,
+    });
+    return result;
+});
 exports.OrderServices = {
     createOrder,
     getAllOrder,
+    getAnOrder,
 };

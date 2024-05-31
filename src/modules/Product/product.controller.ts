@@ -96,7 +96,7 @@ const getUpdatedProduct = async (req: Request, res: Response) => {
 
         const zodParsedUpdatedProductData = productValidationSchema.parse(update);
 
-        const result = await ProductServices.getUpdatedProduct(filter, zodParsedUpdatedProductData)
+        await ProductServices.getUpdatedProduct(filter, zodParsedUpdatedProductData)
 
         const updatedData = await ProductServices.getAllProduct()
 
@@ -128,7 +128,7 @@ const deletedProduct = async (req: Request, res: Response) => {
     try {
         const { productId } = req.params;
 
-        const result = await ProductServices.deletedProduct(productId)
+        await ProductServices.deletedProduct(productId)
 
         res.status(200).json({
             success: true,

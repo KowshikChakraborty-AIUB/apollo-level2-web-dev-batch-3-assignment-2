@@ -12,7 +12,7 @@ const createOrder = async (req: Request, res: Response) => {
         const { productId, email, price, quantity } = req.body;
 
         const product = await ProductServices.getSpecificProduct(productId);
-        console.log(product);
+        
 
 
         if (product === null || product === undefined) {
@@ -31,7 +31,7 @@ const createOrder = async (req: Request, res: Response) => {
             const zodParsedUpdatedProductData = productValidationSchema.parse(product);
 
 
-            const result2 = await ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
+            await ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
 
 
             return res.status(409).json({
@@ -50,7 +50,7 @@ const createOrder = async (req: Request, res: Response) => {
         //console.log(zodParsedUpdatedProductData);
 
 
-        const result2 = await ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
+        await ProductServices.getUpdatedProduct(productId, zodParsedUpdatedProductData);
 
         //console.log(result2);
 

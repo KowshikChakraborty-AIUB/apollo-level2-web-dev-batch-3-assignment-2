@@ -96,7 +96,7 @@ const getUpdatedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const update = req.body;
         //console.log(update);
         const zodParsedUpdatedProductData = product_validation_1.default.parse(update);
-        const result = yield product_service_1.ProductServices.getUpdatedProduct(filter, zodParsedUpdatedProductData);
+        yield product_service_1.ProductServices.getUpdatedProduct(filter, zodParsedUpdatedProductData);
         const updatedData = yield product_service_1.ProductServices.getAllProduct();
         res.status(200).json({
             success: true,
@@ -125,7 +125,7 @@ const getUpdatedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functi
 const deletedProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { productId } = req.params;
-        const result = yield product_service_1.ProductServices.deletedProduct(productId);
+        yield product_service_1.ProductServices.deletedProduct(productId);
         res.status(200).json({
             success: true,
             message: "Product deleted successfully!",
@@ -140,10 +140,49 @@ const deletedProduct = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
 });
+//search a product request-response handler
+const searchAProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const searchTerm = req.query.searchTerm;
+    if (searchTerm) {
+        try {
+            const result = yield product_service_1.ProductServices.searchAProduct(searchTerm);
+            res.status(200).json({
+                success: true,
+                message: `Products matching search term ${searchTerm} fetched successfully!`,
+                data: result,
+            });
+        }
+        catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Product not found",
+                error: err,
+            });
+        }
+    }
+    else {
+        try {
+            const result = yield product_service_1.ProductServices.getAllProduct();
+            res.status(200).json({
+                success: true,
+                message: "Products fetched successfully!",
+                data: result,
+            });
+        }
+        catch (err) {
+            res.status(500).json({
+                success: false,
+                message: "Product not found",
+                error: err,
+            });
+        }
+    }
+});
 exports.ProductControllers = {
     createProduct,
     getAllProduct,
     getSpecificProduct,
     getUpdatedProduct,
     deletedProduct,
+    searchAProduct,
 };

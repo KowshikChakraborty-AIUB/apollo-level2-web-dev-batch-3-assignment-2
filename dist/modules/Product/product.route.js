@@ -8,7 +8,7 @@ const express_1 = __importDefault(require("express"));
 const product_controller_1 = require("./product.controller");
 const router = express_1.default.Router();
 router.post('/', product_controller_1.ProductControllers.createProduct);
-router.get('/', product_controller_1.ProductControllers.getAllProduct);
+router.get('/', product_controller_1.ProductControllers.searchAProduct); // here, if no product is retrieved by name, category or description, then it will retrieve all the products.
 router.get('/:productId', product_controller_1.ProductControllers.getSpecificProduct);
 router.put('/:productId', product_controller_1.ProductControllers.getUpdatedProduct);
 router.delete('/:productId', product_controller_1.ProductControllers.deletedProduct);
